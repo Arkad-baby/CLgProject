@@ -13,16 +13,27 @@ model User {
   uuid        String    @unique
   userName  String
   Email      String
-  order Order[]
+  megaOrder MegaOrder[]
+}
+
+model MegaOrder{
+    id         String   @id @default(uuid())
+    created_at DateTime @default(now()) @db.Timestamptz(6)
+    user User @relation(fields: [userId], references: [uuid])
+    userId String
+    order Order[]
 }
 
 
 model Order{
       id         Int   @id @default(autoincrement())
   created_at DateTime @default(now()) @db.Timestamptz(6)
-  name String @unique
+  food String
+  drinks String? 
   quantity Int
   location String?
- user    User    @relation(fields: [userId], references: [uuid])
-  userId  String
+  description String?
+  completed Boolean
+ megaOrder    MegaOrder    @relation(fields: [megaOrderId], references: [id])
+  megaOrderId  String
 }

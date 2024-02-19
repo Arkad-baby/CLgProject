@@ -3,6 +3,8 @@ import * as dotenv from 'dotenv';
 import cors from "cors";
 
 import { foodRouter } from './food/food.router';
+import { userRouter } from './user/user.router';
+import { orderRouter } from './order/order.router';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,6 +21,8 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('public'));
 app.use('/food',foodRouter)
+app.use('/user',userRouter)
+app.use('/order',orderRouter)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, Express with  TypeScript!');
