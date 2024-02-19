@@ -36,12 +36,12 @@ export const createFoodItems = async (data: foodData): Promise<Success | Error> 
 }
 
 
-export const getFoodItems = async (): Promise<foodData[] | Error> => {
+export const getFoodItems = async (): Promise<foodData[] > => {
     const Food = await prisma.food.findMany();
     
-    if (Food.length === 0) {
-        return { status: 404, errorMessage: "There are no food items in the kitchen." };
-    }
+    // if (Food.length === 0) {
+    //     return { status: 404, errorMessage: "There are no food items in the kitchen." };
+    // }
     
     return Food;
 }

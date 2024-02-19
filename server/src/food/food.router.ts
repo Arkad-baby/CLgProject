@@ -1,8 +1,8 @@
-import express,{ Request, Response } from "express"
+import express,{ NextFunction, Request, Response } from "express"
 import { body, validationResult } from "express-validator"
 
 import * as foodService from "./food.service"
-import { stat } from "fs";
+
 
 export const foodRouter=express.Router();
 
@@ -39,7 +39,7 @@ foodRouter.post("/",[
     })
 ],
 
-async(request:Request,response:Response)=>{
+async(request:Request,response:Response,next: NextFunction)=>{
     const errors = validationResult(request);
 
     if (!errors.isEmpty()) {
@@ -51,19 +51,19 @@ async(request:Request,response:Response)=>{
         console.log(item)
         const {status,message}:any=item;
         if (status == 404) {
-            return response.status(status).json("Hello")
+            return response.status(status).json(item)
         }
         return response.status(status).json(item)
     } 
     catch (error:any) {
-        return response.status(500).json(error.message)
+        next(error);
     }
 
 })
 
 //to get all items
 
-foodRouter.get("/", async(request: Request, response: Response) => {
+foodRouter.get("/", async(request: Request, response: Response,next: NextFunction) => {
     try {
         const getItems = await foodService.getFoodItems();
         
@@ -71,17 +71,16 @@ foodRouter.get("/", async(request: Request, response: Response) => {
             // Handle the case where no items are found
             return response.status(404).json({ success: false, message: 'No items found' });
         }
-        
-        console.log(getItems); // Log the items to the console
+    
         return response.status(200).json(getItems);
     } catch (error) {
-        return response.status(500).json({ success: false, message: 'Internal server error' });
+        next(error);
     }
 });
 
 //to get single item
 
-foodRouter.get("/:name", async(request: Request, response: Response) => {
+foodRouter.get("/:name", async(request: Request, response: Response,next: NextFunction ) => {
     try {
         const name: string = request.params.name;
         const getItem = await foodService.getSingleFoodItem(name);
@@ -93,14 +92,14 @@ foodRouter.get("/:name", async(request: Request, response: Response) => {
         console.log(getItem)
         return response.status(200).json(getItem);
     } catch (error) {
-        return response.status(500).json({ success: false, message: 'Internal server error' });
+        next(error);
     }
 });
 
 
 // to delete an item
 
-foodRouter.delete("/:name",async(request:Request,response:Response)=>{
+foodRouter.delete("/:name",async(request:Request,response:Response,next: NextFunction)=>{
     try {
         const name: string = request.params.name;
         const delteItem= await foodService.deleteFoodItem(name);
@@ -112,7 +111,7 @@ foodRouter.delete("/:name",async(request:Request,response:Response)=>{
          return response.status(status).json(delteItem)
     
     } catch (error:any) {
-        return response.status(500).json({ success: false, message: 'Internal server error' });
+        next(error);
     }
 })
 
