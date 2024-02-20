@@ -26,7 +26,7 @@ model MegaOrder{
 
 
 model Order{
-      id         Int   @id @default(autoincrement())
+      id         String   @id @default(uuid())
   created_at DateTime @default(now()) @db.Timestamptz(6)
   food String
   drinks String? 

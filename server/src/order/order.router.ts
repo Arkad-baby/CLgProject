@@ -59,3 +59,32 @@ orderRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
 }
 )
 
+//To mark the completion of a Order
+
+orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const {orderId}=req.body;
+      if(!orderId){
+        return res.status(400).json("Invalid OrderId.")
+      }
+          const orderCompleted=await prisma.order.update({
+              where:{
+                  id:orderId
+                },
+
+                data:{
+                    
+                    completed:true
+                }
+            })
+
+            if(!orderCompleted){
+                return res.status(400).json("Your order was not found.")
+            }
+            return res.status(200).json(`Your order ${orderId} was completed successfully.`)
+        
+    } catch (error) {
+        next(error) 
+    }
+})
+
