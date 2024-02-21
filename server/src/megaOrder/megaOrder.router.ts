@@ -53,3 +53,45 @@ megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction)
         next(error);
     }
 });
+
+// To get a megaOrder
+
+
+megaOrderRouter.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        
+    
+    const id:string=req.params.id
+
+    const megaOrder=await prisma.megaOrder.findUnique({
+        where:{
+
+            id:id
+        },
+                include:{
+                    order:{ 
+                        select:{
+                            id: true,
+                            created_at: true,
+                            food: true,
+                            drinks: true,
+                            foodQuantity: true,
+                            drinksQuantity: true,
+                            description: true,
+                            location: true,
+                            completed: true,  
+                        }
+                    }
+              
+           
+        }
+    })
+
+    if(!megaOrder){
+        return res.status(404).json(`No megaOrder of id ${id} was found.`)
+    }
+    return res.status(200).json(megaOrder)
+} catch (error) {
+    next(error);
+}
+} )
