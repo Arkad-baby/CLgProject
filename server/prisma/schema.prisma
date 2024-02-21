@@ -29,8 +29,9 @@ model Order{
       id         String   @id @default(uuid())
   created_at DateTime @default(now()) @db.Timestamptz(6)
   food String
-  drinks String? 
-  quantity Int
+  drinks String?
+  drinksQuantity Int? 
+  foodQuantity Int
   location String?
   description String?
   completed Boolean

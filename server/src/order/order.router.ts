@@ -7,11 +7,12 @@ export const orderRouter=express.Router();
 
 type orderData={
     food:string,
-    quantity:number,
+    foodQuantity:number,
     location?:string,
     megaOrderId:string,
     description?:string,
     drinks?:string,
+    drinksQuantity?:number
     userId:string
 }
 
@@ -36,11 +37,12 @@ orderRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
         const orderDataArray = data.map((dat) => ({
             completed: false,
             food: dat.food,
-            quantity: dat.quantity,
+            foodQuantity: dat.foodQuantity,
             megaOrderId: megaOrder.id,
             location: dat.location?? null,
             description: dat.description?? null,
             drinks: dat.drinks?? null,
+            drinksQuantity:dat.drinksQuantity?? null
         }));
         const order = await prisma.order.createMany({
             data: orderDataArray,
@@ -67,6 +69,14 @@ orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
       if(!orderId){
         return res.status(400).json("Invalid OrderId.")
       }
+      const order= await prisma.order.findUnique({
+        where:{
+            id:  orderId
+        }  
+    })
+    if(!order){
+        return res.status(400).json(`Invalid orderId ${orderId}`) 
+    }
           const orderCompleted=await prisma.order.update({
               where:{
                   id:orderId
@@ -86,5 +96,35 @@ orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
     } catch (error) {
         next(error) 
     }
+})
+
+
+//TO delete an order
+
+orderRouter.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
+    const id=req.params.id;
+    console.log(id)
+    try {
+        const order=await prisma.order.findUnique({
+            where:{
+                id:  id
+            }  
+        })
+        if(!order){
+            return res.status(400).json(`Invalid orderId ${id}`) 
+        }
+          const deleteOrder=await prisma.order.delete({
+        where:{
+            id:  id
+        }
+    })
+    if(!deleteOrder){
+        return res.status(400).json("Your order was not deleted.")
+    }
+    return res.status(200).json(`Your order of id ${id} was deleted successfully.`)
+    } catch (error) {
+        next(error) 
+    }
+  
 })
 
