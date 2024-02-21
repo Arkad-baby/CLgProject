@@ -128,3 +128,13 @@ orderRouter.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
   
 })
 
+
+//To get todays order which are completed
+
+// orderRouter.get("/",async(req:Request,res:Response,next:NextFunction)=>{
+//     try {
+        
+//     } catch (error) {
+        
+//     }
+// })
