@@ -4,7 +4,7 @@ import cors from "cors";
 
 import { foodRouter } from './food/food.router';
 import { userRouter } from './user/user.router';
-import { orderRouter } from './order/order.router';
+import { orderRouter } from './foodOrder/foodOrder.router';
 import { megaOrderRouter } from './megaOrder/megaOrder.router';
 
 // Load environment variables from .env file
@@ -23,7 +23,7 @@ app.use(express.json())
 app.use(express.static('public'));
 app.use('/food',foodRouter)
 app.use('/user',userRouter)
-app.use('/order',orderRouter)
+app.use('/foodOrder',orderRouter)
 app.use('/megaOrder',megaOrderRouter)
 
 app.get('/', (req: Request, res: Response) => {
