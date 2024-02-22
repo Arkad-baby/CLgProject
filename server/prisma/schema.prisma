@@ -21,18 +21,27 @@ model MegaOrder{
     created_at DateTime @default(now()) @db.Timestamptz(6)
     user User @relation(fields: [userId], references: [uuid])
     userId String
-    order Order[]
+    FoodOrder FoodOrder[]
+    DrinksOrder DrinksOrder[]
 }
 
 
-model Order{
+model FoodOrder{
       id         String   @id @default(uuid())
   created_at DateTime @default(now()) @db.Timestamptz(6)
   food String
-  drinks String?
-  drinksQuantity Int? 
   foodQuantity Int
-  location String?
+  description String?
+  completed Boolean
+ megaOrder    MegaOrder    @relation(fields: [megaOrderId], references: [id])
+  megaOrderId  String
+}
+
+model DrinksOrder{
+     id         String   @id @default(uuid())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+   drinks String?
+  drinksQuantity Int? 
   description String?
   completed Boolean
  megaOrder    MegaOrder    @relation(fields: [megaOrderId], references: [id])
