@@ -12,7 +12,7 @@ type foodOrderData={
     foodQuantity:number,
     description?:string,
     completed:boolean,
-    userId:string
+    userId:string,
 }
 
 type updatedFoodOrderData={
@@ -31,12 +31,12 @@ orderRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
 
         const data:foodOrderData[]=req.body;
 
-        const megaOrder=await prisma.megaOrder.create({
+        const megaFoodOrder=await prisma.megaFoodOrder.create({
             data:{
                 userId:data[0].userId
             }
         })
-        if(!megaOrder){
+        if(!megaFoodOrder){
             return res.status(400).json(`An error occured.`)  
         }
 
@@ -44,7 +44,7 @@ orderRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
             completed: false,
             food: dat.food,
             foodQuantity: dat.foodQuantity,
-            megaOrderId: megaOrder.id,
+            megaFoodOrderId: megaFoodOrder.id,
             description: dat.description?? null,
         }));
         const foodOrder = await prisma.foodOrder.createMany({

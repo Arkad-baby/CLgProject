@@ -4,7 +4,7 @@ import cors from "cors";
 
 import { userRouter } from './user/user.router';
 import { orderRouter } from './foodOrder/foodOrder.router';
-import { megaOrderRouter } from './megaOrder/megaOrder.router';
+import { megaOrderRouter } from './megaFoodOrder/megaFoodOrder.router';
 
 // Load environment variables from .env file
 dotenv.config();

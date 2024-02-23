@@ -13,17 +13,26 @@ model User {
   uuid      String      @unique
   userName  String
   Email     String
-  megaOrder MegaOrder[]
+  megaFoodOrder MegaFoodOrder[]
+  megaDrinksOrder MegaDrinksOrder[]
 }
 
-model MegaOrder {
+model MegaFoodOrder {
+  id          String        @id @default(uuid())
+  created_at  DateTime      @default(now()) @db.Timestamptz(6)
+  userId      String
+  FoodOrder   FoodOrder[]
+  user        User          @relation(fields: [userId], references: [uuid])
+}
+model MegaDrinksOrder {
   id          String        @id @default(uuid())
   created_at  DateTime      @default(now()) @db.Timestamptz(6)
   userId      String
   DrinksOrder DrinksOrder[]
-  FoodOrder   FoodOrder[]
   user        User          @relation(fields: [userId], references: [uuid])
 }
+
+//Mega Food ra Mega Drinks order rakham laa
 
 model FoodOrder {
   id           String    @id @default(uuid())
@@ -32,8 +41,8 @@ model FoodOrder {
   foodQuantity Int
   description  String?
   completed    Boolean
-  megaOrderId  String
-  megaOrder    MegaOrder @relation(fields: [megaOrderId], references: [id])
+  megaFoodOrderId  String
+  megaFoodOrder    MegaFoodOrder @relation(fields: [megaFoodOrderId], references: [id])
 }
 
 model DrinksOrder {
@@ -43,6 +52,6 @@ model DrinksOrder {
   drinksQuantity Int?
   description    String?
   completed      Boolean
-  megaOrderId    String
-  megaOrder      MegaOrder @relation(fields: [megaOrderId], references: [id])
+  megaDrinksOrderId    String
+  megaDrinksOrder      MegaDrinksOrder @relation(fields: [megaDrinksOrderId], references: [id])
 }

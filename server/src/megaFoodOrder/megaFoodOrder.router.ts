@@ -2,9 +2,11 @@ import prisma from "../utils/db.server";
 
 import express, { NextFunction, Request, Response } from "express"
 
-export const megaOrderRouter = express.Router();
+export const megaFoodOrderRouter = express.Router();
 
-megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
+
+//To get all the mega food orders of today which are not completed
+megaFoodOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Get today's date
         let today = new Date();
@@ -17,7 +19,7 @@ megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction)
         endOfDay.setHours(23, 59, 59, 999);
 
         // Query for orders created between start and end of today
-        const getmegaOrder = await prisma.megaOrder.findMany({
+        const getMegaFoodOrder = await prisma.megaFoodOrder.findMany({
             where: {
                 created_at: {
                     gte: today,
@@ -32,6 +34,7 @@ megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction)
                     select: {
                         id: true,
                         created_at: true,
+                        food:true,
                         foodQuantity: true,
                         description: true,
                         completed: true,
@@ -40,26 +43,26 @@ megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction)
             }
         });
 
-        if (!getmegaOrder || getmegaOrder.length === 0) {
+        if (!getMegaFoodOrder || getMegaFoodOrder.length === 0) {
             return res.status(404).json("No mega orders found for today.");
         }
 
-        return res.status(200).json(getmegaOrder);
+        return res.status(200).json(getMegaFoodOrder);
     } catch (error) {
         next(error);
     }
 });
 
-// To get a megaOrder
+// To get a mega food Order
 
 
-megaOrderRouter.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+megaFoodOrderRouter.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
 
 
         const id: string = req.params.id
 
-        const megaOrder = await prisma.megaOrder.findUnique({
+        const megFoodOrder = await prisma.megaFoodOrder.findUnique({
             where: {
 
                 id: id
@@ -80,10 +83,10 @@ megaOrderRouter.get("/:id", async (req: Request, res: Response, next: NextFuncti
             }
         })
 
-        if (!megaOrder) {
+        if (!megFoodOrder) {
             return res.status(404).json(`No megaOrder of id ${id} was found.`)
         }
-        return res.status(200).json(megaOrder)
+        return res.status(200).json(megFoodOrder)
     } catch (error) {
         next(error);
     }
