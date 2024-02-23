@@ -9,41 +9,40 @@ datasource db {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model User {
-  index  Int @id  @default(autoincrement()) 
-  uuid        String    @unique
+  index     Int         @id @default(autoincrement())
+  uuid      String      @unique
   userName  String
-  Email      String
+  Email     String
   megaOrder MegaOrder[]
 }
 
-model MegaOrder{
-    id         String   @id @default(uuid())
-    created_at DateTime @default(now()) @db.Timestamptz(6)
-    user User @relation(fields: [userId], references: [uuid])
-    userId String
-    FoodOrder FoodOrder[]
-    DrinksOrder DrinksOrder[]
+model MegaOrder {
+  id          String        @id @default(uuid())
+  created_at  DateTime      @default(now()) @db.Timestamptz(6)
+  userId      String
+  DrinksOrder DrinksOrder[]
+  FoodOrder   FoodOrder[]
+  user        User          @relation(fields: [userId], references: [uuid])
 }
 
-
-model FoodOrder{
-      id         String   @id @default(uuid())
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  food String
+model FoodOrder {
+  id           String    @id @default(uuid())
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  food         String
   foodQuantity Int
-  description String?
-  completed Boolean
- megaOrder    MegaOrder    @relation(fields: [megaOrderId], references: [id])
+  description  String?
+  completed    Boolean
   megaOrderId  String
+  megaOrder    MegaOrder @relation(fields: [megaOrderId], references: [id])
 }
 
-model DrinksOrder{
-     id         String   @id @default(uuid())
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-   drinks String?
-  drinksQuantity Int? 
-  description String?
-  completed Boolean
- megaOrder    MegaOrder    @relation(fields: [megaOrderId], references: [id])
-  megaOrderId  String
+model DrinksOrder {
+  id             String    @id @default(uuid())
+  created_at     DateTime  @default(now()) @db.Timestamptz(6)
+  drinks         String?
+  drinksQuantity Int?
+  description    String?
+  completed      Boolean
+  megaOrderId    String
+  megaOrder      MegaOrder @relation(fields: [megaOrderId], references: [id])
 }

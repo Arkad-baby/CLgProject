@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import cors from "cors";
 
-import { foodRouter } from './food/food.router';
 import { userRouter } from './user/user.router';
 import { orderRouter } from './foodOrder/foodOrder.router';
 import { megaOrderRouter } from './megaOrder/megaOrder.router';
@@ -21,7 +20,6 @@ const app = express();
 app.use(cors())
 app.use(express.json())
 app.use(express.static('public'));
-app.use('/food',foodRouter)
 app.use('/user',userRouter)
 app.use('/foodOrder',orderRouter)
 app.use('/megaOrder',megaOrderRouter)

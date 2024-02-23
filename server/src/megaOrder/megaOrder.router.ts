@@ -1,14 +1,14 @@
 import prisma from "../utils/db.server";
 
-import express,{ NextFunction, Request, Response } from "express"
+import express, { NextFunction, Request, Response } from "express"
 
-export const megaOrderRouter=express.Router();
+export const megaOrderRouter = express.Router();
 
 megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Get today's date
         let today = new Date();
-        
+
         // Set hours, minutes, and seconds to 0 to get the start of the day
         today.setHours(0, 0, 0, 0);
 
@@ -25,19 +25,15 @@ megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction)
                 }
             },
             include: {
-                order: {
+                FoodOrder: {
                     where: {
                         completed: false
                     },
                     select: {
                         id: true,
                         created_at: true,
-                        food: true,
-                        drinks: true,
                         foodQuantity: true,
-                        drinksQuantity: true,
                         description: true,
-                        location: true,
                         completed: true,
                     }
                 }
@@ -59,39 +55,36 @@ megaOrderRouter.get("/", async (req: Request, res: Response, next: NextFunction)
 
 megaOrderRouter.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        
-    
-    const id:string=req.params.id
 
-    const megaOrder=await prisma.megaOrder.findUnique({
-        where:{
 
-            id:id
-        },
-                include:{
-                    order:{ 
-                        select:{
-                            id: true,
-                            created_at: true,
-                            food: true,
-                            drinks: true,
-                            foodQuantity: true,
-                            drinksQuantity: true,
-                            description: true,
-                            location: true,
-                            completed: true,  
-                        }
+        const id: string = req.params.id
+
+        const megaOrder = await prisma.megaOrder.findUnique({
+            where: {
+
+                id: id
+            },
+            include: {
+                FoodOrder: {
+                    select: {
+                        id: true,
+                        created_at: true,
+                        food: true,
+                        foodQuantity: true, 
+                        description: true,
+                        completed: true,
                     }
-              
-           
-        }
-    })
+                }
 
-    if(!megaOrder){
-        return res.status(404).json(`No megaOrder of id ${id} was found.`)
+
+            }
+        })
+
+        if (!megaOrder) {
+            return res.status(404).json(`No megaOrder of id ${id} was found.`)
+        }
+        return res.status(200).json(megaOrder)
+    } catch (error) {
+        next(error);
     }
-    return res.status(200).json(megaOrder)
-} catch (error) {
-    next(error);
-}
-} )
+})

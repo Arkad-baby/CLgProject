@@ -1,4 +1,3 @@
-import { foodRouter } from "../food/food.router";
 import prisma from "../utils/db.server";
 
 import express,{ NextFunction, Request, Response } from "express"
@@ -67,40 +66,40 @@ orderRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
 
 //To mark the completion of a food Order
 
-// orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
-//     try {
-//         const {foodOrderId}=req.body;
-//       if(!foodOrderId){
-//         return res.status(400).json("Invalid food orderId.")
-//       }
-//       const foodOrder= await prisma.foodOrder.findUnique({
-//         where:{
-//             id:  foodOrderId
-//         }  
-//     })
-//     if(!foodOrder){
-//         return res.status(400).json(`Invalid orderId ${foodOrderId}`) 
-//     }
-//           const orderCompleted=await prisma.foodOrder.update({
-//               where:{
-//                   id:foodOrderId
-//                 },
+orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const {foodOrderId}=req.body;
+      if(!foodOrderId){
+        return res.status(400).json("Invalid food orderId.")
+      }
+      const foodOrder= await prisma.foodOrder.findUnique({
+        where:{
+            id:  foodOrderId
+        }  
+    })
+    if(!foodOrder){
+        return res.status(400).json(`Invalid orderId ${foodOrderId}`) 
+    }
+          const orderCompleted=await prisma.foodOrder.update({
+              where:{
+                  id:foodOrderId
+                },
 
-//                 data:{
+                data:{
                     
-//                     completed:true
-//                 }
-//             })
+                    completed:true
+                }
+            })
 
-//             if(!orderCompleted){
-//                 return res.status(400).json("Your order was not found.")
-//             }
-//             return res.status(200).json(`Your order ${foodOrderId} was completed successfully.`)
+            if(!orderCompleted){
+                return res.status(400).json("Your order was not found.")
+            }
+            return res.status(200).json(`Your order ${foodOrderId} was completed successfully.`)
         
-//     } catch (error) {
-//         next(error) 
-//     }
-// })
+    } catch (error) {
+        next(error) 
+    }
+})
 
 
 //TO delete an order
@@ -133,77 +132,40 @@ orderRouter.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
 })
 
 
-//To edit a food order
+//To edit a food order or
+//To complete a food order
 
-foodRouter.patch("/:id",async(req:Request,res:Response,next:NextFunction)=>{
-    try {
-        const {id}=req.params
-        console.log(id)
-        if(!id){   
-             try {
-            const {foodOrderId}=req.body;
-          if(!foodOrderId){
-            return res.status(400).json("Invalid food orderId.")
-          }
-          const foodOrder= await prisma.foodOrder.findUnique({
-            where:{
-                id:  foodOrderId
-            }  
-        })
-        if(!foodOrder){
-            return res.status(400).json(`Invalid orderId ${foodOrderId}`) 
-        }
-              const orderCompleted=await prisma.foodOrder.update({
-                  where:{
-                      id:foodOrderId
-                    },
-    
-                    data:{
-                        
-                        completed:true
-                    }
-                })
-    
-                if(!orderCompleted){
-                    return res.status(400).json("Your order was not found.")
+orderRouter.patch("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    try { 
+            const { food, foodQuantity, description } = req.body;
+
+            const foodOrder = await prisma.foodOrder.findUnique({
+                where: {
+                    id: id
                 }
-                return res.status(200).json(`Your order ${foodOrderId} was completed successfully.`)
-            
-        } catch (error) {
-            next(error) 
-        }
-
-        }
-        const {food,
-            foodQuantity,
-            description}:updatedFoodOrderData=req.body;
-        const foodOrder=await prisma.foodOrder.findUnique({
-            where:{
-                id:id
+            });
+         
+            if (!foodOrder) {
+                return res.status(404).json(`Food order of id ${id} is not available.`);
             }
-        })
-        if(!foodOrder){
-            return res.status(404).json(`Food order of id ${id} is not available.`)
-        }
-        const updatedFoodOrder=await prisma.foodOrder.update({
-            where:{
-                id:id
-            },
-            data:{
-                food:food,
-                foodQuantity:foodQuantity,
-                description:description
-
+            const updatedFoodOrder = await prisma.foodOrder.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    food: food,
+                    foodQuantity: foodQuantity,
+                    description: description
+                }
+            });
+            if (!updatedFoodOrder) {
+                return res.status(400).json("Your food order was not updated.");
             }
-        })
-        if(!updatedFoodOrder){
-            return res.status(400).json("Your food order was not updated.")
+            return res.status(200).json({ message: `Food item with ID ${id} updated successfully` });
         }
-        return res.status(200).json({message: `Food item with ID ${id} updated successfully` })
-
-    } catch (error) {
-        next(error)
+     catch (error) {
+        next(error);
     }
-})
-
+});
 
