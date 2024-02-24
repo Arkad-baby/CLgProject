@@ -33,9 +33,9 @@ userRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
 })
 
 
-//To get all the orders of a user
+//To get all the food orders of a user
 
-userRouter.get("/:userId",async(req:Request,res:Response,next:NextFunction)=>{
+userRouter.get("/foodOrder/:userId",async(req:Request,res:Response,next:NextFunction)=>{
     const {userId}=req.params
 
     const user=await prisma.user.findUnique({
@@ -46,22 +46,19 @@ userRouter.get("/:userId",async(req:Request,res:Response,next:NextFunction)=>{
 if(!user){
     return res.status(404).json(`User of id ${userId} was not found.`)
 }
-    const orders=await prisma.megaOrder.findMany({
+    const orders=await prisma.megaFoodOrder.findMany({
         where:{
             userId:userId
         },
   
    include:{
-    order:{
+    FoodOrder:{
         select:{
             id:true,
             created_at:true,
-            food:true,
-            drinks:true,
-            foodQuantity:true,
-            drinksQuantity:true,
-            description:true,
-            location:true,   
+            food:true,     
+            foodQuantity:true,  
+           description:true,
             completed:true,
         }
     }
@@ -70,6 +67,41 @@ if(!user){
 
     if(!orders){
         return res.status(400).json(`Cannot get orders of user id ${userId}.`)
+    }
+    return res.status(200).json(orders)
+})
+userRouter.get("/drinksOrder/:userId",async(req:Request,res:Response,next:NextFunction)=>{
+    const {userId}=req.params
+
+    const user=await prisma.user.findUnique({
+        where:{
+            uuid:userId
+        }
+    })
+if(!user){
+    return res.status(404).json(`User of id ${userId} was not found.`)
+}
+    const orders=await prisma.megaDrinksOrder.findMany({
+        where:{
+            userId:userId
+        },
+  
+   include:{
+    DrinksOrder:{
+        select:{
+            id:true,
+            created_at:true,
+            drinks:true,     
+            drinksQuantity:true,  
+           description:true,
+            completed:true,
+        }
+    }
+   }
+    })
+
+    if(!orders){
+        return res.status(400).json(`Cannot get drinks order of user id ${userId}.`)
     }
     return res.status(200).json(orders)
 })
