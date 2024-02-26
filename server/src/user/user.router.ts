@@ -23,10 +23,10 @@ userRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
     })
 
     if(!user){
-        return res.status(404).json("User not created")
+        return res.status(404).json({success:false,errorMessage:"User not created"})
         
     }
-    return res.status(200).json("User created successfully.")
+    return res.status(200).json({success:false,successMessage:"User created successfully."})
 } catch (error) {
       next(error)  
 }
