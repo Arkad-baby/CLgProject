@@ -11,6 +11,29 @@ type userData={
     uuid:string,
 }
 
+//To get a single user
+
+userRouter.get("/:uuid",async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const {uuid}=req.params
+        const user=await prisma.user.findUnique({
+            where:{
+                uuid:uuid
+            }
+        })
+        if(!user){
+            return res.status(404).json({success:false,ErrorMessage:"User not found."})
+        }
+        return res.status(200).json({success:true,message:"User exists."})
+        
+    } catch (error) {
+        next(error) 
+    }
+})
+
+
+
+//To create a user
 userRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
     try {
     const {Email,userName,uuid}:userData=req.body;
@@ -23,10 +46,10 @@ userRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
     })
 
     if(!user){
-        return res.status(404).json("User not created")
+        return res.status(404).json({success:false,errorMessage:"User not created"})
         
     }
-    return res.status(200).json("User created successfully.")
+    return res.status(200).json({success:true,errorMessage:"User created successfully."})
 } catch (error) {
       next(error)  
 }
@@ -44,7 +67,7 @@ userRouter.get("/foodOrder/:userId",async(req:Request,res:Response,next:NextFunc
         }
     })
 if(!user){
-    return res.status(404).json(`User of id ${userId} was not found.`)
+    return res.status(404).json({success:false,errorMessage:`User of id ${userId} was not found.`})
 }
     const orders=await prisma.megaFoodOrder.findMany({
         where:{
@@ -66,9 +89,9 @@ if(!user){
     })
 
     if(!orders){
-        return res.status(400).json(`Cannot get orders of user id ${userId}.`)
+        return res.status(400).json({success:false,errorMessage:`Cannot get orders of user id ${userId}.`})
     }
-    return res.status(200).json(orders)
+    return res.status(200).json({ success:true, data:orders})
 })
 userRouter.get("/drinksOrder/:userId",async(req:Request,res:Response,next:NextFunction)=>{
     const {userId}=req.params
@@ -79,7 +102,7 @@ userRouter.get("/drinksOrder/:userId",async(req:Request,res:Response,next:NextFu
         }
     })
 if(!user){
-    return res.status(404).json(`User of id ${userId} was not found.`)
+    return res.status(404).json({success:false,errorMessage:`User of id ${userId} was not found.`})
 }
     const orders=await prisma.megaDrinksOrder.findMany({
         where:{
@@ -101,7 +124,7 @@ if(!user){
     })
 
     if(!orders){
-        return res.status(400).json(`Cannot get drinks order of user id ${userId}.`)
+        return res.status(404).json({success:false,errorMessage:`Cannot get drinks order of user id ${userId}.`})
     }
-    return res.status(200).json(orders)
+    return res.status(200).json({ success:true, data:orders})
 })
