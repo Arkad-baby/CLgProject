@@ -1,3 +1,4 @@
+"use client";
 import Navbar from '@/components/Navbar';
 import React, { useState, useEffect } from 'react';
 import { useUser } from "@clerk/nextjs";
@@ -26,6 +27,31 @@ const Page = () => {
       email: email,
       uuid: id
     });
+
+       // Make a POST request
+       fetch('http://localhost:3939/user/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: fullName,
+          email: email,
+          uuid: id
+        }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('User created:', data);
+      })
+      .catch(error => {
+        console.error('Error creating user:', error);
+      });
   }
 
   return (
