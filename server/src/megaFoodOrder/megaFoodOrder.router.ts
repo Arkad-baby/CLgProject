@@ -44,10 +44,10 @@ megaFoodOrderRouter.get("/", async (req: Request, res: Response, next: NextFunct
         });
 
         if (!getMegaFoodOrder || getMegaFoodOrder.length === 0) {
-            return res.status(404).json("No mega orders found for today.");
+            return res.status(400).json({success:false,errorMessage:"No mega orders found for today."})
         }
 
-        return res.status(200).json(getMegaFoodOrder);
+        return res.status(200).json({success:true,data:getMegaFoodOrder});
     } catch (error) {
         next(error);
     }
@@ -84,9 +84,10 @@ megaFoodOrderRouter.get("/:id", async (req: Request, res: Response, next: NextFu
         })
 
         if (!megFoodOrder) {
-            return res.status(404).json(`No megaOrder of id ${id} was found.`)
+            return res.status(400).json({success:false,errorMessage:`No megaOrder of id ${id} was found.`})
         }
-        return res.status(200).json(megFoodOrder)
+        return res.status(200).json({success:true,data:megFoodOrder});
+ 
     } catch (error) {
         next(error);
     }

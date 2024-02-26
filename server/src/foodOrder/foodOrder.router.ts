@@ -37,7 +37,7 @@ orderRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
             }
         })
         if(!megaFoodOrder){
-            return res.status(400).json(`An error occured.`)  
+            return res.status(400).json({success:false,errorMessage:`An error occured.`})
         }
 
         const orderDataArray = data.map((dat) => ({
@@ -53,9 +53,9 @@ orderRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
 
 
            if(!foodOrder){
-            return res.status(400).json("Your food order was not created.")
+            return res.status(400).json({success:false,errorMessage:"Your food order was not created."})
         }
-        return res.status(200).json(`Your food order was created successfully.`)
+        return res.status(200).json({success:true,message:`Your food order was created successfully.`})
        
      
     } catch (error) {
@@ -70,7 +70,8 @@ orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
     try {
         const {foodOrderId}=req.body;
       if(!foodOrderId){
-        return res.status(400).json("Invalid food orderId.")
+        return res.status(400).json({success:false,errorMessage:"Invalid food orderId."})
+       
       }
       const foodOrder= await prisma.foodOrder.findUnique({
         where:{
@@ -78,7 +79,7 @@ orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
         }  
     })
     if(!foodOrder){
-        return res.status(400).json(`Invalid orderId ${foodOrderId}`) 
+        return res.status(400).json({success:false,errorMessage:`Invalid orderId ${foodOrderId}.`}) 
     }
           const orderCompleted=await prisma.foodOrder.update({
               where:{
@@ -92,9 +93,10 @@ orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
             })
 
             if(!orderCompleted){
-                return res.status(400).json("Your order was not found.")
+                return res.status(400).json({success:false,errorMessage:"Your order was not found."})
             }
-            return res.status(200).json(`Your order ${foodOrderId} was completed successfully.`)
+            return res.status(200).json({success:true,message:`Your order ${foodOrderId} was completed successfully.`})
+      
         
     } catch (error) {
         next(error) 
@@ -106,7 +108,6 @@ orderRouter.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
 
 orderRouter.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
     const id=req.params.id;
-    console.log(id)
     try {
         const order=await prisma.foodOrder.findUnique({
             where:{
@@ -114,7 +115,7 @@ orderRouter.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
             }  
         })
         if(!order){
-            return res.status(400).json(`Invalid food orderId ${id}`) 
+            return res.status(400).json({success:false,errorMessage:`Invalid food orderId ${id}`})
         }
           const deleteOrder=await prisma.foodOrder.delete({
         where:{
@@ -122,9 +123,9 @@ orderRouter.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
         }
     })
     if(!deleteOrder){
-        return res.status(400).json("Your order was not deleted.")
+        return res.status(400).json({success:false,errorMessage:"Your order was not deleted."})
     }
-    return res.status(200).json(`Your order of id ${id} was deleted successfully.`)
+    return res.status(200).json({success:true,message:`Your order of id ${id} was deleted successfully.`})
     } catch (error) {
         next(error) 
     }
@@ -147,7 +148,8 @@ orderRouter.patch("/:id", async (req: Request, res: Response, next: NextFunction
             });
          
             if (!foodOrder) {
-                return res.status(404).json(`Food order of id ${id} is not available.`);
+                return res.status(404).json({success:false,errorMessage:`Food order of id ${id} is not available.`});
+              
             }
             const updatedFoodOrder = await prisma.foodOrder.update({
                 where: {
@@ -160,10 +162,11 @@ orderRouter.patch("/:id", async (req: Request, res: Response, next: NextFunction
                 }
             });
             if (!updatedFoodOrder) {
-                return res.status(400).json("Your food order was not updated.");
+                return res.status(400).json({success:false,errorMessage:"Your food order was not updated."});
             }
-            return res.status(200).json({ message: `Food item with ID ${id} updated successfully` });
+            return res.status(200).json({success:true,message: `Food item with ID ${id} updated successfully.`});
         }
+        
      catch (error) {
         next(error);
     }

@@ -34,7 +34,7 @@ drinksOrder.post("/",async(req:Request,res:Response,next:NextFunction)=>{
             }
         })
         if(!megaDrinksOrder){
-            return res.status(400).json(`An error occured.`)  
+            return res.status(400).json({success:false,errorMessage:`An error occured while creating megaDrinksOrder.`})  
         }
 
         const orderDataArray = data.map((dat) => ({
@@ -50,9 +50,9 @@ drinksOrder.post("/",async(req:Request,res:Response,next:NextFunction)=>{
 
 
            if(!drinksOrder){
-            return res.status(400).json("Your drinks order was not created.")
+            return res.status(400).json({success:false,errorMessage:"Your drinks order was not created."}) 
         }
-        return res.status(200).json(`Your drinks order was created successfully.`)
+        return res.status(200).json({success:true,errorMessage:"Your drinks order was created successfully."}) 
        
      
     } catch (error) {
@@ -67,7 +67,7 @@ drinksOrder.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
     try {
         const {drinksOrderId}=req.body;
       if(!drinksOrderId){
-        return res.status(400).json("Invalid drinks orderId.")
+        return res.status(400).json({success:false,errorMessage:"Invalid drinks orderId."})
       }
       const drinksOrder= await prisma.drinksOrder.findUnique({
         where:{
@@ -75,7 +75,7 @@ drinksOrder.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
         }  
     })
     if(!drinksOrder){
-        return res.status(400).json(`Invalid orderId ${drinksOrderId}`) 
+        return res.status(400).json({success:false,errorMessage:`Invalid orderId ${drinksOrderId}`})
     }
           const orderCompleted=await prisma.drinksOrder.update({
               where:{
@@ -89,9 +89,10 @@ drinksOrder.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
             })
 
             if(!orderCompleted){
-                return res.status(400).json("Your drinks order was not found.")
+                return res.status(400).json({success:false,errorMessage:"Your drinks order was not found."})
             }
-            return res.status(200).json(`Your order ${drinksOrderId} was completed successfully.`)
+            return res.status(200).json({success:true,message:`Your order ${drinksOrderId} was completed successfully.`})
+           
         
     } catch (error) {
         next(error) 
@@ -103,7 +104,7 @@ drinksOrder.patch("/",async(req:Request,res:Response,next:NextFunction)=>{
 
 drinksOrder.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
     const id=req.params.id;
-    console.log(id)
+ 
     try {
         const order=await prisma.drinksOrder.findUnique({
             where:{
@@ -111,7 +112,7 @@ drinksOrder.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
             }  
         })
         if(!order){
-            return res.status(400).json(`Invalid drinks orderId ${id}`) 
+            return res.status(400).json({success:false,errorMessage:`Invalid drinks orderId ${id}`}) 
         }
           const deleteOrder=await prisma.drinksOrder.delete({
         where:{
@@ -119,9 +120,10 @@ drinksOrder.delete("/:id",async(req:Request,res:Response,next:NextFunction)=>{
         }
     })
     if(!deleteOrder){
-        return res.status(400).json("Your drinks order was not deleted.")
+        return res.status(400).json({success:false,errorMessage:"Your drinks order was not deleted."})
     }
-    return res.status(200).json(`Your drinks order of id ${id} was deleted successfully.`)
+    return res.status(200).json({success:true,message:`Your drinks order of id ${id} was deleted successfully.`})
+  
     } catch (error) {
         next(error) 
     }
@@ -144,7 +146,8 @@ drinksOrder.patch("/:id", async (req: Request, res: Response, next: NextFunction
             });
          
             if (!drinksOrder) {
-                return res.status(404).json(`Drinks order of id ${id} is not available.`);
+                return res.status(404).json({success:false,errorMessage:`Drinks order of id ${id} is not available.`});
+             
             }
             const updatedDrinksOrder = await prisma.drinksOrder.update({
                 where: {
@@ -157,9 +160,10 @@ drinksOrder.patch("/:id", async (req: Request, res: Response, next: NextFunction
                 }
             });
             if (!updatedDrinksOrder) {
-                return res.status(400).json("Your drinks order was not updated.");
+                return res.status(400).json({success:false,errorMessage:"Your drinks order was not updated."});
             }
-            return res.status(200).json({ message: `Drinks item with ID ${id} updated successfully` });
+            return res.status(200).json({success:true,message: `Drinks item with ID ${id} updated successfully`});
+           
         }
      catch (error) {
         next(error);
