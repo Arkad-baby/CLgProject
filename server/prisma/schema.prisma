@@ -13,6 +13,8 @@ model User {
   uuid      String      @unique
   userName  String
   Email     String
+  hasImage Boolean
+  imageUrl String? 
   megaFoodOrder MegaFoodOrder[]
   megaDrinksOrder MegaDrinksOrder[]
 }

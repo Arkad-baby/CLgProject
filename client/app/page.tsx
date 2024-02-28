@@ -15,6 +15,7 @@ const Page = () => {
   useEffect(() => {
     if (isSignedIn && user) {
       createUser(user);
+      console.log(user)
     }
   }, [isSignedIn, user]);
 

@@ -9,6 +9,8 @@ type userData={
     Email:string,
     userName:string,
     uuid:string,
+    hasImage:boolean,
+    imageUrl:string
 }
 
 //To get a single user
@@ -36,12 +38,14 @@ userRouter.get("/:uuid",async(req:Request,res:Response,next:NextFunction)=>{
 //To create a user
 userRouter.post("/",async(req:Request,res:Response,next:NextFunction)=>{
     try {
-    const {Email,userName,uuid}:userData=req.body;
+    const {Email,userName,uuid,hasImage,imageUrl}:userData=req.body;
     const user=await prisma.user.create({
         data:{
             Email:Email,
             userName:userName,
-            uuid:uuid
+            uuid:uuid,
+            hasImage:hasImage,
+            imageUrl:imageUrl
         }
     })
 
