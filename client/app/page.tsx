@@ -28,6 +28,9 @@ const Page = () => {
       uuid: id
     });
 
+    
+
+
        // Make a POST request
        fetch('http://localhost:3939/user/', {
         method: 'POST',
