@@ -23,7 +23,7 @@ import {food} from "../public/constants"
 export function ComboboxDemo() {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
-  console.log(value)
+  // console.log(value)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -32,7 +32,7 @@ export function ComboboxDemo() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[400px] justify-between"
+          className="max-w-md w-full justify-between"
         >
           {value
             ? food.find((food) => food.value === value)?.label
@@ -40,7 +40,7 @@ export function ComboboxDemo() {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[400px] p-0">
+      <PopoverContent  className="max-w-md w-full p-0 bg-white   ">
         <Command>
           <CommandInput placeholder="Search food..." />
           <CommandEmpty>No food found.</CommandEmpty>
