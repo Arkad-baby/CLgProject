@@ -7,16 +7,13 @@ import {
     SelectValue,
   } from "@/components/ui/select"
   import {food}  from "../public/constants"
-const FoodDropDown = ( ) => {
-    const [selectedFood, setSelectedFood] = useState(""); // State to store the selected food
+const FoodDropDown = ( field:any) => {
+ 
 
-    const handleFoodSelection = (event:any) => {
-        setSelectedFood(event.target.value); // Update the state with the selected food
-        console.log(selectedFood)
-    };
+  
   return (
 
-        <Select value={selectedFood} >
+        <Select defaultValue={field.value}  onValueChange={field.onChange}>
   <SelectTrigger className="max-w-md w-full cursor-pointer ">
     <SelectValue placeholder="Food" />
   </SelectTrigger>

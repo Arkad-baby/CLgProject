@@ -1,12 +1,19 @@
+"use client";
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from '@/components/ui/button';
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { food } from "../../public/constants";
-import { Form,FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import FoodDropDown from '@/components/FoodDropDown';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 
 
@@ -16,7 +23,7 @@ const formSchema = z.object({
     message: "Quantity must be between 1 and 50.",
   }),
   food: z.string().min(3, {
-    message:"First Choose then order"
+    message: "First Choose then order"
   }),
   description: z.string().optional()
 });
@@ -49,10 +56,19 @@ const Page = () => {
             control={form.control}
             name="food"
             render={({ field }) => (
-              <FormItem className='flex flex-col'>
+              <FormItem  className='flex flex-col'>
                 <FormLabel>Food</FormLabel>
                 <FormControl>
-                  <FoodDropDown  />
+                  <Select onValueChange={field.onChange} defaultValue={field.value} >
+                    <SelectTrigger className="max-w-md w-full cursor-pointer ">
+                      <SelectValue placeholder="Food"  />
+                    </SelectTrigger>
+                    <SelectContent className='bg-white cursor-pointer'>
+                      {food.map((foo: any) => (
+                        <SelectItem key={foo.value} className='cursor-pointer hover:font-bold transition' value={foo.value}>{foo.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormDescription>
                   Choose what you want to have
@@ -65,10 +81,10 @@ const Page = () => {
             control={form.control}
             name="quantity"
             render={({ field }) => (
-              <FormItem>
+              <FormItem defaultValue={field.value}  >
                 <FormLabel>Quantity</FormLabel>
                 <FormControl>
-                  <Input placeholder="Select quantity"  />
+                  <Input  value={field.value} onChange={field.onChange} type='number' placeholder="Select quantity" />
                 </FormControl>
                 <FormDescription>
                   Choose how many want to have
